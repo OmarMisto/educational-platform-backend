@@ -33,6 +33,8 @@ public class User implements UserDetails {
     private UserImg userImg;
     @OneToMany(mappedBy = "commentId",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
     private Collection<Comment> comments;
+    @OneToMany(mappedBy = "commentResponseId",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
+    private Collection<CommentResponse>commentResponses;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

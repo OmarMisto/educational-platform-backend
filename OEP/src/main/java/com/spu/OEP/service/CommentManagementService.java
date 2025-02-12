@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -54,20 +55,28 @@ public class CommentManagementService {
 
     }
 
-    public Collection<?> viewCourseCommentsService(long courseId) {
-        ArrayList<Object> response=new ArrayList<>();
+    public Collection<ViewCommentDTO> viewCourseCommentsService(long courseId) {
         if(courseId<=0){
-            response.add("Invalid course");
-            return response;
+            ArrayList<ViewCommentDTO> viewCommentDTOS=new ArrayList<>();
+            viewCommentDTOS.add(ViewCommentDTO.builder().reqResponse("invalid course id").build());
+            return viewCommentDTOS;
         }
         if(!courseRepo.existsById(courseId)){
-            response.add("the course is not exit");
-            return response;
+            ArrayList<ViewCommentDTO> viewCommentDTOS=new ArrayList<>();
+            viewCommentDTOS.add(ViewCommentDTO.builder().reqResponse("Un exist course").build());
+            return viewCommentDTOS;
         }
-        response.addAll(commentRepo.getCommentsByCourseId(courseId));
-        return response;
+        return commentRepo.findAllByCourseCourseId(courseId).stream().map(comment -> ViewCommentDTO.builder()
+                .commentId(comment.getCommentId())
+                .userId(comment.getUser().getUserId())
+                .userImg(comment.getUser().getUserImg().getImgData())
+                .userEmail(comment.getUser().getAccount().getEmail())
+                .publishDate(comment.getPostedDate())
+                .frequentFlag(comment.isMostFrequentCommentCheck())
+                .message(comment.getMessage())
+                .modifiedAt(comment.getModifiedAt())
+                .reqResponse("success").build()).toList();
     }
-
     public PostedCommentDTO editCommentService(EditCommentDTO editCommentDTO) throws IOException {
         if(editCommentDTO.getCommentId()<=0 ||editCommentDTO.getMessage()==null){
             throw new IllegalArgumentException("invalid request");
@@ -111,21 +120,32 @@ public class CommentManagementService {
             response.add("the course is not exit");
             return response;
         }
-        return commentRepo.getCommentsByMostFrequentComments(courseId);
+        return commentRepo.findAllByCourseCourseIdAndIsMostFrequent(courseId).stream().map(comment -> ViewCommentDTO.builder()
+                .commentId(comment.getCommentId())
+                .userId(comment.getUser().getUserId())
+                .userImg(comment.getUser().getUserImg().getImgData())
+                .userEmail(comment.getUser().getAccount().getEmail())
+                .publishDate(comment.getPostedDate())
+                .frequentFlag(comment.isMostFrequentCommentCheck())
+                .message(comment.getMessage())
+                .modifiedAt(comment.getModifiedAt())
+                .reqResponse("success").build()).toList();
     }
-
-
     public String responseToCommentService(ResponseToCommentDTO responseToCommentDTO) {
         if (responseToCommentDTO.getCommentId()<=0){
             return "invalid comment";
         }
-        if(!commentRepo.existsById(responseToCommentDTO.getCommentId())){
-            return "comment not found";
+        Comment comment= commentRepo.findById(responseToCommentDTO.getCommentId()).orElseThrow(null);
+        if (comment!=null){
+            commentResponseRepo.save(CommentResponse.builder()
+                    .message(responseToCommentDTO.getMessage())
+                    .comment(comment)
+                    .build());
+            return "success";
         }
-        commentResponseRepo.save(CommentResponse.builder().message(responseToCommentDTO.getMessage()).comment(commentRepo.findById(responseToCommentDTO.getCommentId()).orElseThrow(()->new EntityNotFoundException("not found"))).build());
-        return "success";
-    }
+        return "comment not found";
 
+    }
     public Collection<CommentResponseDTO> viewCommentResponsesService(long commentId) {
         ArrayList<Object> response=new ArrayList<>();
         if (commentId<=0){

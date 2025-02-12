@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ResponseToCommentDTO {
     private long commentId;
+    private long userId;
     private String message;
 }

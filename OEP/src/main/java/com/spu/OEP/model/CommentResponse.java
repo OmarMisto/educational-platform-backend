@@ -20,4 +20,6 @@ public class CommentResponse {
     private final LocalDateTime responseDate=LocalDateTime.now();
     @ManyToOne
     private Comment comment;
+    @ManyToOne
+    private User user;
 }

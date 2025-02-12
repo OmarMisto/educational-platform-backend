@@ -13,6 +13,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -42,4 +43,9 @@ public interface CommentRepo extends JpaRepository<Comment,Long> {
             "inner join user_img uim on u.user_img_img_id=uim.img_id)" +
             "where c.course_id=:courseId and cm.most_frequent_comment_check=1;",nativeQuery = true)
     Collection<ViewCourseCommentsDTO> getCommentsByMostFrequentComments(@Param("courseId") long courseId);
+
+
+    Collection<Comment> findAllByCourseCourseId(long courseId);
+    @Query("select c from Comment c where c.mostFrequentCommentCheck=true and  c.course.courseId=:courseId")
+    Collection<Comment> findAllByCourseCourseIdAndIsMostFrequent(@Param("courseId") long courseId);
 }
