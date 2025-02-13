@@ -17,5 +17,4 @@ import java.util.List;
 @Builder
 public class CreatePlayListDTO {
     private String playListName;
-    private List<Integer> coursesId;
 }

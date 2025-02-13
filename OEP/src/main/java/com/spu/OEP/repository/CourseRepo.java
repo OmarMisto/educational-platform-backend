@@ -19,12 +19,13 @@ public interface CourseRepo extends JpaRepository<Course,Long> {
 //    void deleteByCoursePlayListCoursePlayListId(long playListId);
     @Transactional
     @Modifying
-    @Query("update Course c set c.coursePlayList=:playListId where c.courseId=:courseId")
+    @Query(  value = "UPDATE course SET course_play_list_course_play_list_id = :playListId WHERE course_id = :courseId",
+            nativeQuery = true)
     void updateByCoursePlayListId(@Param("courseId") long courseId,@Param("playListId") long playList);
     @Transactional
     @Modifying
-    @Query("update Course c set c.coursePlayList=:removeCheckPoint where c.coursePlayList=:playListId")
-    void removeCourseFormPlayList(@Param("playListId") long playListId,@Param("removeCheckPoint") int removeCheckPoint);
+    @Query(value = "update course c set c.course_play_list_course_play_list_id=null where c.course_id=:courseId",nativeQuery = true )
+    void removeCourseFormPlayList(@Param("courseId") long courseId);
 
     @Query(value = "select video_data from video where video_id=(select video_video_id from course where course_id=:courseId)",nativeQuery = true)
     byte[] getByCourseId(@Param("courseId") long courseId);

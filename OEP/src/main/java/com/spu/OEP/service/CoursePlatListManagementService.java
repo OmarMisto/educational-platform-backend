@@ -21,17 +21,17 @@ public class CoursePlatListManagementService {
 
     public String createPlayListService(CreatePlayListDTO createPlayListDTO) {
 
-        if(createPlayListDTO.getPlayListName()==null){
+        if(createPlayListDTO.getPlayListName()==null||createPlayListDTO.getPlayListName().length()<6){
             return "invalid input";
         }
-        ArrayList<Course> courses=new ArrayList<>();
-        if (createPlayListDTO.getCoursesId()!=null){
-            for (long id :createPlayListDTO.getCoursesId()){
-                courses.add(courseRepo.findById(id).orElseThrow(()->new EntityNotFoundException("Not found")));
-            }
-        }
+//        ArrayList<Course> courses=new ArrayList<>();
+//        if (createPlayListDTO.getCoursesId()!=null){
+//            for (long id :createPlayListDTO.getCoursesId()){
+//                courses.add(courseRepo.findById(id).orElseThrow(()->new EntityNotFoundException("Not found")));
+//            }
+//        }
         try {
-            coursePlayListRepo.save(CoursePlayList.builder().listName(createPlayListDTO.getPlayListName()).courses(courses).build());
+            coursePlayListRepo.save(CoursePlayList.builder().listName(createPlayListDTO.getPlayListName()).build());
         }catch (Exception e){
             return "error while saving playlist: "+e.getMessage();
         }
@@ -39,16 +39,20 @@ public class CoursePlatListManagementService {
     }
 
     public String deletePlayList(long playListId) {
-        if(coursePlayListRepo.existsById(playListId)){
-            coursePlayListRepo.deleteById(playListId);
+        try {
+            if(coursePlayListRepo.existsById(playListId)){
+                coursePlayListRepo.deleteById(playListId);
 //            courseRepo.deleteByCoursePlayListCoursePlayListId(playListId);
-            return "success";
+                return "success";
+            }
+        }catch (Exception e){
+            return e.getMessage()+"Error while deleting";
         }
         return "fail";
     }
 
     public String addCourseToPlayList(AddCourseToPlayListDTO addCourseToPlayListDTO) {
-        if(addCourseToPlayListDTO.getCourseId()>=0||addCourseToPlayListDTO.getPlaylistId()>=0){
+        if(addCourseToPlayListDTO.getCourseId()<=0||addCourseToPlayListDTO.getPlaylistId()<=0){
              return "invalid input";
         }
         if (!coursePlayListRepo.existsById(addCourseToPlayListDTO.getPlaylistId())||!courseRepo.existsById(addCourseToPlayListDTO.getCourseId())){
@@ -61,13 +65,17 @@ public class CoursePlatListManagementService {
             return "error while adding the course"+e.getMessage();
         }
     }
-
-    public String removeCourseFromPlayList(long playListId) {
-        if(playListId>=0){
+    public String removeCourseFromPlayList(long courseId) {
+        if(courseId<=0){
             return "invalid playlist";
         }
-        if (!coursePlayListRepo.existsById(playListId))return "the playlist is not found";
-        courseRepo.removeCourseFormPlayList(playListId,0);
-        return "success";
+        try {
+            if (!courseRepo.existsById(courseId))return "the course is not found";
+            courseRepo.removeCourseFormPlayList(courseId);
+            return "success";
+        }catch (Exception e){
+            return e.getMessage().concat(" error while removing");
+        }
+
     }
 }
