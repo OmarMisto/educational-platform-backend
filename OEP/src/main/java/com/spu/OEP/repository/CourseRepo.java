@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -35,6 +36,8 @@ public interface CourseRepo extends JpaRepository<Course,Long> {
     void updateCourseVideo(@Param("courseId") long courseId,@Param("video") Video video);
     @Query("select video.videoId from Course c where c.courseId=:courseId")
     Long getVideoVideoIdById(@Param("courseId") long courseId);
+
+    List<Course> findByInstructorUserId(long userId);
 
 //    Course findByInstructorInstructorId(long instructorId);
 //    @Query("select * from Course c where c.Instructor.UserId=:instructorId")

@@ -2,7 +2,6 @@ package com.spu.OEP.service;
 import com.spu.OEP.DTO.*;
 import com.spu.OEP.model.*;
 import com.spu.OEP.repository.*;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -131,7 +130,6 @@ public class CourseManagementService {
 
         return result;
     }
-
     public ShowCourseDTO showCourseService(long courseId) {
         if (courseId <= 0) {
             return ShowCourseDTO.builder().requestMessage("invalid course id").build();
@@ -150,6 +148,24 @@ public class CourseManagementService {
                 .playListId(course.getCoursePlayList()!=null?course.getCoursePlayList().getCoursePlayListId():0).requestMessage("success")
                 .build()).orElse(ShowCourseDTO.builder().requestMessage("fail").build());
     }
+    public List<ShowPostedCourseDTO> showPostedCourse(long userId){
+        List<ShowPostedCourseDTO> showPostedCourse=new ArrayList<>();
+        if(userId<=0){
+            showPostedCourse.add(ShowPostedCourseDTO.builder().requestMessage("invalid user id").build());
+            return showPostedCourse;
+        }
+        List<Course> courses= courseRepo.findByInstructorUserId(userId);
+        for (Course course:courses) {
+            showPostedCourse.add(ShowPostedCourseDTO.builder().courseId(course.getCourseId())
+                    .title(course.getTitle())
+                    .category(course.getCourseCategories().getCategoryTitle())
+                    .contentImg(null)
+                    .rate(displayCourseRateService(course.getCourseId()).getRate())
+                    .publishDate(course.getPublishDate())
+                    .requestMessage("success").build());
+        }
+        return showPostedCourse;
+    }
     public byte[] playCourseService(long courseId) {
         return courseId>=0&&courseRepo.existsById(courseId)?courseRepo.getByCourseId(courseId):null;
     }
@@ -158,5 +174,11 @@ public class CourseManagementService {
             courseRepo.updateCourseVideo(courseId,Video.builder().videoData(video.getBytes()).content(video.getContentType()).size(video.getSize()).build());
         }
         return courseRepo.getVideoVideoIdById(courseId)>0?"success":"fail";
+    }
+    public Collection<?> searchForCourseService(String searchContent,String categoryTitle){
+        if(searchContent.isEmpty()){
+            return null;
+        }
+       return null;
     }
 }

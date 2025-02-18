@@ -49,6 +49,10 @@ public class CourseManagementController {
     public ResponseEntity<ShowCourseDTO> showCourse(@RequestParam("courseId")long courseId){
         return ResponseEntity.ok(courseManagementService.showCourseService(courseId));
     }
+    @GetMapping("show/posted/courses/{instructorId}")
+    public ResponseEntity<List<ShowPostedCourseDTO>>showPostedCourses(@PathVariable("instructorId")long instructorId){
+        return ResponseEntity.ok(courseManagementService.showPostedCourse(instructorId));
+    }
     @GetMapping("playCourse/{courseId}")
     public ResponseEntity<?>playCourse(@PathVariable("courseId") long courseId){
         return ResponseEntity.ok(courseManagementService.playCourseService(courseId));

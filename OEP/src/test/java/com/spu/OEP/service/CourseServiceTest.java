@@ -82,6 +82,13 @@ public class CourseServiceTest {
     void testTheSuccessOfShowCourse(){
         assertEquals("success",courseManagementService.showCourseService(1).getRequestMessage());
     }
+    @Test
+    void testTheSuccessOfShowPostedCourses(){
+
+        assertTrue(true, String.valueOf((courseManagementService.showPostedCourse(1).stream().count()==2)));
+    }
+
+
 
 
 
