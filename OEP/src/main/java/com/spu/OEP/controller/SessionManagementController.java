@@ -1,6 +1,7 @@
 package com.spu.OEP.controller;
 
 import com.spu.OEP.DTO.LogInDTO;
+import com.spu.OEP.DTO.RoleAccessControlDTO;
 import com.spu.OEP.DTO.SignUpUserDTO;
 import com.spu.OEP.service.SessionManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,10 @@ public class SessionManagementController {
     @PostMapping("/login")
     public ResponseEntity<?>logIn(@RequestBody LogInDTO logInDTO){
         return ResponseEntity.ok(service.logInService(logInDTO.getEmail(),logInDTO.getPassword()));
+    }
+    @GetMapping("/role/access")
+    public ResponseEntity<RoleAccessControlDTO>roleAccessControl(String email){
+        return ResponseEntity.ok(service.roleAccessService(email));
     }
 
 }

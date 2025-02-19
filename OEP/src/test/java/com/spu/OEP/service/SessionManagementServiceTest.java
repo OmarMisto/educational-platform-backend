@@ -55,5 +55,9 @@ class SessionManagementServiceTest {
     void testTheFailureOfLogInWithBlankFields(){
         assertEquals("fail",sessionManagementService.logInService("",""));
     }
+    @Test
+    void testTheSuccessOfRoleAccessControl(){
+        assertEquals("Instructor",sessionManagementService.roleAccessService("ahmedsaleh55@gmail.com").getRole());
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.spu.OEP.service;
 
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.spu.OEP.DTO.RoleAccessControlDTO;
 import com.spu.OEP.DTO.SignUpUserDTO;
 import com.spu.OEP.SecurityConfig.JwtService;
 import com.spu.OEP.model.*;
@@ -141,4 +142,17 @@ public class SessionManagementService {
         return "fail";
     }
 
+    public RoleAccessControlDTO roleAccessService(@NonNull String email) {
+        if (email.isEmpty()){
+            return RoleAccessControlDTO.builder().requestMessage("missing email").build();
+        }
+        return userRepo.findByAccountEmail(email)
+                .map(user -> RoleAccessControlDTO.builder()
+                        .role(user.getRole().name())
+                        .userId(user.getUserId())
+                        .email(user.getAccount().getEmail())
+                        .requestMessage("success")
+                        .build())
+                .orElse(RoleAccessControlDTO.builder().requestMessage("user not found").build());
+    }
 }
