@@ -2,16 +2,23 @@ package com.spu.OEP.controller;
 
 import com.spu.OEP.DTO.AddCourseToPlayListDTO;
 import com.spu.OEP.DTO.CreatePlayListDTO;
+import com.spu.OEP.DTO.ViewPlayLists;
 import com.spu.OEP.service.CoursePlatListManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("playlist/management")
 public class CoursePlayListManagementController {
     @Autowired
     private CoursePlatListManagementService coursePlatListManagementService;
+    @GetMapping("view/Playlists/{instructorId}")
+    public ResponseEntity<List<ViewPlayLists>>viewPlayListsController(@PathVariable("instructorId") long instructorId){
+        return ResponseEntity.ok(coursePlatListManagementService.viewPlayListsService(instructorId));
+    }
     @PostMapping("create/playlist")
     public ResponseEntity<String> createPlayListController(@RequestBody CreatePlayListDTO createPlayListDTO){
         return ResponseEntity.ok(coursePlatListManagementService.createPlayListService(createPlayListDTO));

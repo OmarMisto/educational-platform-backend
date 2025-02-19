@@ -25,4 +25,6 @@ public class CoursePlayList {
     @Column
     @OneToMany(mappedBy = "courseId",cascade = CascadeType.ALL)
     private Collection<Course> courses;
+    @OneToOne
+    private Instructor instructor;
 }

@@ -2,15 +2,20 @@ package com.spu.OEP.service;
 
 import com.spu.OEP.DTO.AddCourseToPlayListDTO;
 import com.spu.OEP.DTO.CreatePlayListDTO;
+import com.spu.OEP.DTO.ViewPlayLists;
 import com.spu.OEP.model.Course;
 import com.spu.OEP.model.CoursePlayList;
 import com.spu.OEP.repository.CoursePlayListRepo;
 import com.spu.OEP.repository.CourseRepo;
+import com.spu.OEP.repository.InstructorRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class CoursePlatListManagementService {
@@ -18,6 +23,8 @@ public class CoursePlatListManagementService {
     CoursePlayListRepo coursePlayListRepo;
     @Autowired
     CourseRepo courseRepo;
+    @Autowired
+    InstructorRepo instructorRepo;
 
     public String createPlayListService(CreatePlayListDTO createPlayListDTO) {
 
@@ -31,7 +38,8 @@ public class CoursePlatListManagementService {
 //            }
 //        }
         try {
-            coursePlayListRepo.save(CoursePlayList.builder().listName(createPlayListDTO.getPlayListName()).build());
+            coursePlayListRepo.save(CoursePlayList.builder().listName(createPlayListDTO.getPlayListName())
+                    .instructor(instructorRepo.findByUserId(createPlayListDTO.getInstructorUserId())).build());
         }catch (Exception e){
             return "error while saving playlist: "+e.getMessage();
         }
@@ -76,6 +84,32 @@ public class CoursePlatListManagementService {
         }catch (Exception e){
             return e.getMessage().concat(" error while removing");
         }
+
+    }
+
+    public List<ViewPlayLists> viewPlayListsService(long instructorId) {
+        List<ViewPlayLists> viewPlayLists=new ArrayList<>();
+        if (instructorId<=0){
+            viewPlayLists.add(ViewPlayLists.builder().requestMessage("invalid instructor id").build());
+        }
+        List<CoursePlayList> coursePlayLists = coursePlayListRepo
+                .findAllByInstructorUserId(instructorId);
+        if (coursePlayLists.isEmpty()){
+            viewPlayLists.add(ViewPlayLists.builder().requestMessage("an empty list").build());
+            return viewPlayLists;
+        }
+        for (CoursePlayList coursePlayList : coursePlayLists){
+            Collection<Course> courses= courseRepo.findByCoursePlayListCoursePlayListId(coursePlayList.getCoursePlayListId());
+            viewPlayLists.add(ViewPlayLists.builder().listName(coursePlayList.getListName())
+                    .lastUpdate(coursePlayList.getLastUpdate())
+                    .playlistId(coursePlayList.getCoursePlayListId())
+                    .instructorId(coursePlayList.getInstructor().getUserId())
+                    .numOfCourses(courses.size())
+                    .contentImg(null)
+                    .requestMessage("success").courseIds(courses.stream().map(Course::getCourseId).toArray())
+                    .build());
+        }
+        return viewPlayLists;
 
     }
 }

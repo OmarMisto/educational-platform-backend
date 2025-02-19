@@ -16,20 +16,23 @@ class CoursePlatListManagementServiceTest {
     CoursePlatListManagementService coursePlatListManagementService;
     @Test
     void testTheSuccessOfCreatePlayList(){
-       assertEquals("success",coursePlatListManagementService.createPlayListService(CreatePlayListDTO.builder().playListName("C++ Full PlayList").build()));
+       assertEquals("success",coursePlatListManagementService.createPlayListService(CreatePlayListDTO.builder().playListName("C++ Full PlayList").instructorUserId(1).build()));
     }
     @Test
     void testTheSuccessOfDeletingPlayList(){
-        assertEquals("success",coursePlatListManagementService.deletePlayList(3));
+        assertEquals("success",coursePlatListManagementService.deletePlayList(6));
     }
     @Test
     void testTheSuccessOfAddCourse(){
-        assertEquals("success",coursePlatListManagementService.addCourseToPlayList(AddCourseToPlayListDTO.builder().courseId(2).playlistId(4).build()));
+        assertEquals("success",coursePlatListManagementService.addCourseToPlayList(AddCourseToPlayListDTO.builder().courseId(1).playlistId(7).build()));
     }
     @Test
     void testTheSuccessOfRemoveCourse(){
-        assertEquals("success",coursePlatListManagementService.removeCourseFromPlayList(2));
+        assertEquals("success",coursePlatListManagementService.removeCourseFromPlayList(52));
     }
-
+    @Test
+    void testTheSuccessOfShowPlayLists(){
+        assertTrue(true, String.valueOf(coursePlatListManagementService.viewPlayListsService(1).size()==1));
+    }
 
 }
