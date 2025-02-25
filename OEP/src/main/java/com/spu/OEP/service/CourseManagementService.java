@@ -164,6 +164,8 @@ public class CourseManagementService {
                     .publishDate(course.getPublishDate())
                     .requestMessage("success").build());
         }
+
+
         return showPostedCourse;
     }
     public byte[] playCourseService(long courseId) {
