@@ -107,6 +107,7 @@ public class AccountManagementService {
         }
         return "mismatch email or password";
     }
+
     @Transactional
     public String uploadImgService(UploadImgDTO uploadImgDTO) throws IOException {
         if(uploadImgDTO==null||uploadImgDTO.getUploadedImg().isEmpty()||uploadImgDTO.getUploadedImg().getContentType()==null||uploadImgDTO.getAccountId()<=0){
@@ -125,8 +126,8 @@ public class AccountManagementService {
         }catch (Exception e){
             return "Error while uploading image"+e.getMessage();
         }
-        // TODO: ١٧/١١/٢٠٢٤  isValidType();
-    }//not working
+
+    }
     @Transactional
     public String editAccountInfoService(EditAccountInfoDTO editAccountInfoDTO) {
         if(editAccountInfoDTO.getAccountId()<=0){
