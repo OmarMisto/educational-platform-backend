@@ -127,6 +127,7 @@ public class AccountManagementService {
             return "Error while uploading image"+e.getMessage();
         }
 
+
     }
     @Transactional
     public String editAccountInfoService(EditAccountInfoDTO editAccountInfoDTO) {
