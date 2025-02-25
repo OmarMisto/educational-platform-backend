@@ -120,6 +120,7 @@ public class CommentManagementService {
             response.add("the course is not exit");
             return response;
         }
+
         return commentRepo.findAllByCourseCourseIdAndIsMostFrequent(courseId).stream().map(comment -> ViewCommentDTO.builder()
                 .commentId(comment.getCommentId())
                 .userId(comment.getUser().getUserId())
