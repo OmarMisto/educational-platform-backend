@@ -8,14 +8,14 @@ import com.spu.OEP.model.CoursePlayList;
 import com.spu.OEP.repository.CoursePlayListRepo;
 import com.spu.OEP.repository.CourseRepo;
 import com.spu.OEP.repository.InstructorRepo;
-import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
+
 
 @Service
 public class CoursePlatListManagementService {
@@ -25,6 +25,7 @@ public class CoursePlatListManagementService {
     CourseRepo courseRepo;
     @Autowired
     InstructorRepo instructorRepo;
+
 
     public String createPlayListService(CreatePlayListDTO createPlayListDTO) {
 
