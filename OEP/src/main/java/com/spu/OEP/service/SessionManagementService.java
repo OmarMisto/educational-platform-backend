@@ -1,6 +1,6 @@
 package com.spu.OEP.service;
 
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+
 import com.spu.OEP.DTO.RoleAccessControlDTO;
 import com.spu.OEP.DTO.SignUpUserDTO;
 import com.spu.OEP.SecurityConfig.JwtService;
@@ -19,7 +19,8 @@ import java.time.LocalDateTime;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 @Service
-public class SessionManagementService {
+public class SessionManagementService
+{
     @Autowired
     private UserRepo userRepo;
     @Autowired
@@ -63,9 +64,11 @@ public class SessionManagementService {
     }
     public String signUpService(SignUpUserDTO userDTO){
         if(userDTO.getFirstName()==null||userDTO.getLastName()==null||userDTO.getEmail()==null||userDTO.getPassword()==null){
+
             return "missing failed error";
         }
         if (userDTO.getPassword().length()<8){
+
             return "the password is too short, it should me more than 8 charters";
         }
         userDTO.setPassword(passwordEncryptionMD5Tch(userDTO.getPassword()));
